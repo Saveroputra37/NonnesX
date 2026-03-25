@@ -66,6 +66,8 @@ const Userloginpage = () => {
       setError(errorMessage);
       console.error("Google Sign In Error:", err);
     }
+    setEmail("");
+    setPassword("");
   };
 
   return (
