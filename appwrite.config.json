@@ -40,56 +40,60 @@
         }
     },
     "functions": [
-        {
-            "$id": "nonnesxapi",
-            "name": "NonnesxFunc",
-            "runtime": "node-22",
-            "buildSpecification": "s-0.5vcpu-512mb",
-            "runtimeSpecification": "s-0.5vcpu-512mb",
-            "execute": [
-                "any"
-            ],
-            "events": [],
-            "scopes": [
-                "users.read"
-            ],
-            "schedule": "",
-            "timeout": 15,
-            "enabled": true,
-            "logging": true,
-            "entrypoint": "src/main.js",
-            "commands": "npm install",
-            "ignore": [
-                "node_modules",
-                ".npm"
-            ],
-            "path": "functions/NonnesxFunc"
-        },
-        {
-            "$id": "webhookapi",
-            "name": "webhook-user",
-            "runtime": "node-25",
-            "buildSpecification": "s-0.5vcpu-512mb",
-            "runtimeSpecification": "s-0.5vcpu-512mb",
-            "execute": [
-                "any"
-            ],
-            "events": [],
-            "scopes": [
-                "users.read"
-            ],
-            "schedule": "",
-            "timeout": 15,
-            "enabled": true,
-            "logging": true,
-            "entrypoint": "src/main.js",
-            "commands": "npm install",
-            "ignore": [
-                "node_modules",
-                ".npm"
-            ],
-            "path": "functions/webhook-user"
-        }
+      {
+        "$id": "nonnesxapi",
+        "name": "NonnesxFunc",
+        "runtime": "node-22",
+        "buildSpecification": "s-0.5vcpu-512mb",
+        "runtimeSpecification": "s-0.5vcpu-512mb",
+        "execute": ["any"],
+        "events": [],
+        "scopes": ["users.read"],
+        "schedule": "",
+        "timeout": 15,
+        "enabled": true,
+        "logging": true,
+        "entrypoint": "src/main.js",
+        "commands": "npm install",
+        "ignore": ["node_modules", ".npm"],
+        "path": "functions/NonnesxFunc"
+      },
+      {
+        "$id": "webhookapi",
+        "name": "webhook-user",
+        "runtime": "node-25",
+        "buildSpecification": "s-0.5vcpu-512mb",
+        "runtimeSpecification": "s-0.5vcpu-512mb",
+        "execute": ["any"],
+        "events": [],
+        "scopes": ["users.read"],
+        "schedule": "",
+        "timeout": 15,
+        "enabled": true,
+        "logging": true,
+        "entrypoint": "src/main.js",
+        "commands": "npm install",
+        "ignore": ["node_modules", ".npm"],
+        "path": "functions/webhook-user"
+      },
+      {
+        "$id": "nonnapi",
+        "name": "nonnesxfnc",
+        "runtime": "node-25",
+        "buildSpecification": "s-0.5vcpu-512mb",
+        "runtimeSpecification": "s-0.5vcpu-512mb",
+        "execute": ["any"],
+        "events": [],
+        "scopes": ["users.read"],
+        "schedule": "",
+        "timeout": 15,
+        "enabled": true,
+        "logging": true,
+        "entrypoint": "src/server.js",
+        "commands": "npm install",
+        "ignore": ["node_modules", ".npm"],
+        "path": "functions/nonnesxfnc"
+      }
     ],
     "tablesDB": [
         {

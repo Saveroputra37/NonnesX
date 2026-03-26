@@ -1,4 +1,4 @@
-import { Eye, EyeOff, Snowflake } from "lucide-react";
+import { Eye, EyeOff, Key, Snowflake } from "lucide-react";
 import { useState } from "react";
 import { useSignUp } from "@clerk/clerk-react";
 const Usercreatepage = () => {
@@ -229,7 +229,7 @@ const Usercreatepage = () => {
                 onChange={(e) => setPassword(e.target.value)}
                 type={showpassword ? "text" : "password"}
                 value={password}
-                placeholder="Kata Sandi"
+                placeholder="Kata Sandi yang Kuat"
               />
               <div
                 role="button"

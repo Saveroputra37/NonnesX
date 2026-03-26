@@ -23,10 +23,9 @@ const AppContent = () => {
   if (user) {
     return (
       <div>
-        <Navbar />
         <Home />
       </div>
-    )
+    );
   }
 
   // Jika user belum login, tampilkan Login
