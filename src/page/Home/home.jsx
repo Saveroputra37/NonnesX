@@ -1,11 +1,12 @@
 import React from "react";
 import Sidenav from "../../assets/Sidenav";
+import Indexpage from "../../assets/Indexpage";
 
 const home = () => {
   return (
-    <div className="grid grid-cols-12">
+    <div className="flex h-screen w-full">
       <Sidenav />
-      <p className="col-span-8 p-4">Welcome to the Home Page</p>
+      <Indexpage />
     </div>
   );
 };
