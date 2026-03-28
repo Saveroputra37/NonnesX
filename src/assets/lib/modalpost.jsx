@@ -1,5 +1,5 @@
 import ReactDOM from "react-dom";
-import { X, Image, List, Smile, Calendar, MapPin, Globe2 } from "lucide-react";
+import { X, Image, List, Smile, Calendar, MapPin, Globe2, ArrowRight } from "lucide-react";
 import { useRef, useState, useEffect } from "react";
 import { useUser } from "@clerk/clerk-react";
 
@@ -11,6 +11,8 @@ const Modal = ({ isOpen, onClose, onPostSubmit }) => {
   const [previewUrl, setPreviewUrl] = useState(null);
   const fileInputRef = useRef(null);
 
+
+    
   // Reset content & height saat modal dibuka/ditutup
   useEffect(() => {
     if (isOpen) {
@@ -65,12 +67,10 @@ const Modal = ({ isOpen, onClose, onPostSubmit }) => {
         <div className="flex items-center justify-between px-4 py-3 sticky top-0 bg-black/80 backdrop-blur-md z-10 border-b-2 border-b-gray-100/10 mb-3">
           <button
             onClick={onClose}
-            className="p-2 text-zinc-100 hover:bg-zinc-900 rounded-full transition-all cursor-pointer"
+            className="p-2 text-zinc-100 hover:bg-zinc-900 rounded-full transition-all cursor-pointer flex items-center gap-x-2"
           >
-            <X size={20} />
-          </button>
-          <button className="text-blue-500 font-bold text-sm hover:bg-blue-500/10 px-4 py-1.5 rounded-full transition-colors">
-            Drafts
+            <p className="text-sm text-gray-400">Back Homes</p>
+            <ArrowRight size={20} />
           </button>
         </div>
 
@@ -97,7 +97,7 @@ const Modal = ({ isOpen, onClose, onPostSubmit }) => {
                 <p className="text-lg capitalize">{user?.username}</p>
                 <Globe2 size={14} />
               </div>
-              <div></div>
+
               <textarea
                 ref={textareaRef}
                 placeholder="What is happening?!"
@@ -129,9 +129,21 @@ const Modal = ({ isOpen, onClose, onPostSubmit }) => {
                   </div>
                 )}
               </div>
-              <div className="flex items-center gap-1 text-blue-500 text-[13px] font-bold mb-4 hover:bg-blue-500/10 w-fit px-2 py-1 rounded-full cursor-pointer">
-                <Globe2 size={16} />
-                <span>Everyone can reply</span>
+              <div className="flex items-center w-full justify-between">
+                <div className="flex items-center gap-1 text-blue-500 text-[13px] font-bold mb-4 hover:bg-blue-500/10 w-fit px-2 py-1 rounded-full cursor-pointer">
+                  <Globe2 size={16} />
+                  <span>Everyone can reply</span>
+                </div>
+                {content.length > 0 && (
+                  <div className="relative bottom-1.5 w-fit flex items-center justify-center">
+                    <span
+                      className={`flex text-[15px] ${content.length > 10000 ? "text-red-500" : "text-zinc-500"}`}
+                    >
+                      <p>Limit :</p>
+                      <p className="flex"> {10000 - content.length}</p>
+                    </span>
+                  </div>
+                )}
               </div>
 
               <div className="h-[1px] bg-zinc-800 mb-3 w-full" />
@@ -141,22 +153,13 @@ const Modal = ({ isOpen, onClose, onPostSubmit }) => {
                 <div className="flex items-center -ml-2 text-blue-500">
                   <button
                     onClick={() => fileInputRef.current?.click()}
-                    className="p-2 hover:bg-blue-500/10 rounded-full cursor-pointer"
+                    className="p-2 hover:bg-blue-500/10 rounded-md cursor-pointer border-black border-2   hover:border-blue-500"
                   >
                     <Image size={20} />
                   </button>
                 </div>
 
-                <div className="flex items-center gap-4">
-                  {content.length > 0 && (
-                    <div className="relative w-8 h-8 flex items-center justify-center">
-                      <span
-                        className={`text-[10px] ${content.length > 280 ? "text-red-500" : "text-zinc-500"}`}
-                      >
-                        {280 - content.length}
-                      </span>
-                    </div>
-                  )}
+                <div className="flex items-center gap-4 my-3">
                   <button
                     onClick={handlePost}
                     disabled={!content.trim() || content.length > 280}
@@ -167,7 +170,7 @@ const Modal = ({ isOpen, onClose, onPostSubmit }) => {
                         : "bg-blue-500/50 text-white/50 cursor-not-allowed"
                     }`}
                   >
-                    Post
+                    Post Tweets
                   </button>
                 </div>
               </div>
