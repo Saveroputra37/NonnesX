@@ -34,7 +34,7 @@ const Sidenav = () => {
       {/* --- DESKTOP & TABLET SIDEBAR (Kiri) --- */}
       <div
         className="hidden sm:flex flex-col h-screen sticky top-0 bg-black border-r border-gray-800 text-white 
-                      w-[80px] xl:w-[275px] px-2 xl:px-4 py-3 justify-between items-center xl:items-start transition-all"
+                      w-[80px] xl:w-[350px] px-2 xl:px-4 py-3 justify-between items-center xl:items-start transition-all"
       >
         <div className="flex flex-col w-full items-center xl:items-start">
           {/* Logo */}
@@ -73,7 +73,19 @@ const Sidenav = () => {
         {/* Profile Section */}
         <div className="relative w-full">
           {isDropdownOpen && (
-            <div className="absolute bottom-full left-0 w-64 mb-4 bg-black border border-gray-800 shadow-[0_0_10px_rgba(255,255,255,0.1)] rounded-2xl overflow-hidden z-50">
+            <div className="absolute bottom-full left-0 w-64 mb-4 bg-black border border-gray-800 shadow-[0_0_15px_rgba(255,255,255,0.1)] rounded-2xl overflow-hidden z-50 py-2">
+              {/* TOMBOL EDIT PROFILE DI DROPDOWN */}
+              <button
+                onClick={() => {
+                  openUserProfile();
+                  setIsDropdownOpen(false); // Tutup dropdown setelah buka profil
+                }}
+                className="w-full flex items-center gap-3 p-4 hover:bg-gray-900 transition font-bold text-sm text-white border-b border-gray-800"
+              >
+                <User size={18} /> Settings & Privacy
+              </button>
+
+              {/* TOMBOL SIGN OUT */}
               <button
                 onClick={() => signOut()}
                 className="w-full flex items-center gap-3 p-4 hover:bg-gray-900 transition font-bold text-sm text-red-500"

@@ -33,7 +33,7 @@ const TweetCard = () => {
       {tweetList.map((tweet) => (
         <div
           key={tweet.$id}
-          className="rounded-lg  max-w-[600px] w-full bg-black border-b border-gray-800 p-4 transition-colors cursor-pointer font-sans text-white my-3 "
+          className="rounded-lg max-w-[600px] w-full bg-black border-b border-gray-800 p-4 transition-colors cursor-pointer font-sans text-white my-2 "
         >
           <div className="flex gap-3 ">
             {/* Avatar User */}
@@ -41,7 +41,7 @@ const TweetCard = () => {
             {/* Content Section */}
             <div className="flex-1">
               <div className="flex justify-between items-start">
-                <div className="flex items-center gap-1 gap-x-3flex-wrap">
+                <div className="flex items-center gap-1 gap-x-3 flex-wrap">
                   <div className="shrink-0">
                     <img
                       src={
@@ -53,13 +53,13 @@ const TweetCard = () => {
                     />
                   </div>
                   <div>
-                    <span className="font-bold text-[15px] hover:underline flex items-center gap-0.5">
+                    <span className="font-bold text-[15px] hover:underline flex items-center gap-2">
                       {tweet.name_user}
                       {/* Badge Verifikasi jika isverified_user true */}
                       {tweet.isverified_user && (
                         <BadgeCheck
                           size={16}
-                          className="text-[#1d9bf0] fill-[#1d9bf0] text-black"
+                          className="text-[#1d9bf0] fill-[#1d9bf0] "
                         />
                       )}
                     </span>
@@ -79,24 +79,24 @@ const TweetCard = () => {
               </div>
 
               {/* Teks Postingan */}
-              <div className="text-[15px] text-[#e7e9ea] mt-0.5 whitespace-pre-wrap leading-normal">
+              <div className="text-[15px] text-[#e7e9ea]  whitespace-pre-wrap leading-normal mt-5">
                 {tweet.content_post}
               </div>
 
               {/* Gambar Postingan (Cek jika image_post ada dan bukan string kosong) */}
               {tweet.image_post && tweet.image_post !== "minus" && (
-                <div className="mt-3 rounded-2xl border border-gray-800 overflow-hidden">
+                <div className="my-5 rounded-2xl border border-gray-800 overflow-hidden">
                   <img
                     src={tweet.image_post}
                     alt="Post content"
                     className="w-full h-auto object-cover max-h-[270px]"
-                    onError={(e) => (e.target.style.display = "none")} // Sembunyikan jika URL gambar tidak valid
+                    onError={(e) => (e.target.style.display = "none")}
                   />
                 </div>
               )}
 
               {/* Action Buttons dengan Nama Property yang Sesuai */}
-              <div className="flex justify-between mt-3 max-w-md text-[#71767b] -ml-2">
+              <div className="flex  justify-between mt-3 max-w-md text-[#71767b] -ml-2">
                 <ActionIcon
                   Icon={MessageCircle}
                   count={tweet.replies}
