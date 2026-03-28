@@ -10,12 +10,14 @@ import {
   Video,
   User,
   Plus,
+  SendHorizonal,
 } from "lucide-react";
-
+import Modal from "./lib/modalpost";
 const Sidenav = () => {
   const { user } = useUser();
   const { openUserProfile, signOut } = useClerk();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const navItems = [
     { icon: <HomeIcon size={28} />, label: "Home" },
@@ -34,12 +36,13 @@ const Sidenav = () => {
       {/* --- DESKTOP & TABLET SIDEBAR (Kiri) --- */}
       <div
         className="hidden sm:flex flex-col h-screen sticky top-0 bg-black border-r border-gray-800 text-white 
-                      w-[80px] xl:w-[350px] px-2 xl:px-4 py-3 justify-between items-center xl:items-start transition-all"
+                      w-[80px] xl:w-[400px] px-2 xl:px-4 py-3 justify-between items-center xl:items-start transition-all"
       >
         <div className="flex flex-col w-full items-center xl:items-start">
           {/* Logo */}
-          <div className="p-3 w-fit hover:bg-gray-900 rounded-full cursor-pointer transition">
+          <div className="p-3 w-full hover:bg-gray-900 cursor-pointer transition flex items-center gap-x-3">
             <Snowflake className="text-blue-400" size={32} />
+            <p className="text-4xl font-bold hidden xl:block">Nonnesx</p>
           </div>
 
           {/* Navigation Items */}
@@ -48,7 +51,7 @@ const Sidenav = () => {
               <div
                 key={idx}
                 onClick={item.onClick}
-                className="flex items-center gap-5 p-3 w-fit xl:pr-8 hover:bg-gray-900 rounded-full cursor-pointer transition group"
+                className="flex items-center gap-5 p-3 w-full xl:pr-8 hover:bg-gray-900 cursor-pointer transition group"
               >
                 <span className="text-white group-hover:scale-105 transition-transform">
                   {item.icon}
@@ -62,18 +65,23 @@ const Sidenav = () => {
 
           {/* Post Button (X Style) */}
           <button
-            className="mt-4 bg-blue-500 hover:bg-blue-600 text-white font-bold rounded-full 
+            onClick={() => setIsModalOpen(true)}
+            className="mt-10 bg-blue-500 hover:bg-blue-600 text-white font-bold rounded-full 
                              w-12 h-12 xl:w-full xl:h-12 flex items-center justify-center transition shadow-lg"
           >
-            <Plus className="xl:hidden" size={24} />
-            <span className="hidden xl:block">Post</span>
+            <SendHorizonal className="xl:hidden block" size={24} />
+            <SendHorizonal className="xl:block sm:hidden mr-2" size={24} />
+            <span className="hidden xl:block">
+              <span>Post Your Tweets</span>
+            </span>
           </button>
+          <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
         </div>
 
         {/* Profile Section */}
         <div className="relative w-full">
           {isDropdownOpen && (
-            <div className="absolute bottom-full left-0 w-64 mb-4 bg-black border border-gray-800 shadow-[0_0_15px_rgba(255,255,255,0.1)] rounded-2xl overflow-hidden z-50 py-2">
+            <div className="absolute bottom-full left-0 w-64 mb-4 bg-black border border-gray-800 shadow-[0_0_15px_rgba(255,255,255,0.1)]  overflow-hidden z-50 py-2">
               {/* TOMBOL EDIT PROFILE DI DROPDOWN */}
               <button
                 onClick={() => {
@@ -90,15 +98,14 @@ const Sidenav = () => {
                 onClick={() => signOut()}
                 className="w-full flex items-center gap-3 p-4 hover:bg-gray-900 transition font-bold text-sm text-red-500"
               >
-                <LogOutIcon size={18} /> Sign out @
-                {user?.username || user?.firstName}
+                <LogOutIcon size={18} /> Sign Out Account
               </button>
             </div>
           )}
 
           <div
             onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-            className="flex items-center justify-between p-3 hover:bg-gray-900 rounded-full cursor-pointer transition w-full"
+            className="flex items-center justify-between p-3 hover:bg-gray-900  cursor-pointer transition w-full"
           >
             <div className="flex items-center gap-3">
               <img
@@ -106,7 +113,7 @@ const Sidenav = () => {
                 alt="pfp"
                 className="size-10 rounded-full"
               />
-              <div className="hidden xl:flex flex-col leading-tight">
+              <div className="hidden xl:flex flex-col leading-tight capitalize">
                 <span className="font-bold text-[15px]">{user?.fullName}</span>
                 <span className="text-gray-500 text-[15px]">
                   @{user?.username || "user"}

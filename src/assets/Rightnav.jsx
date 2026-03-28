@@ -18,7 +18,7 @@ const DarkRightSidebar = () => {
   ];
 
   return (
-    <aside className="hidden lg:flex flex-col w-[350px] gap-4 p-4 sticky top-0 h-screen overflow-y-auto bg-black text-zinc-100 border-l border-zinc-800">
+    <aside className="hidden lg:flex flex-col w-[450px] gap-4 p-4 sticky top-0 h-screen overflow-y-auto bg-black text-zinc-100 border-l border-zinc-800">
       {/* Search Bar - Sticky with Glass Effect */}
       <div className="sticky top-0 bg-black/80 backdrop-blur-xl pb-2 z-10">
         <div className="relative group mt-1">

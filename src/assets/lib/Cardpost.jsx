@@ -39,7 +39,7 @@ const TweetCard = () => {
             {/* Avatar User */}
 
             {/* Content Section */}
-            <div className="flex-1">
+            <div className="flex-1 w-full">
               <div className="flex justify-between items-start">
                 <div className="flex items-center gap-1 gap-x-3 flex-wrap">
                   <div className="shrink-0">
@@ -96,7 +96,7 @@ const TweetCard = () => {
               )}
 
               {/* Action Buttons dengan Nama Property yang Sesuai */}
-              <div className="flex  justify-between mt-3 max-w-md text-[#71767b] -ml-2">
+              <div className="flex  justify-between mt-3  text-[#71767b] -ml-2 w-full">
                 <ActionIcon
                   Icon={MessageCircle}
                   count={tweet.replies}
@@ -135,7 +135,7 @@ const TweetCard = () => {
 
 const ActionIcon = ({ Icon, count, hoverColor, hoverBg }) => (
   <button
-    className={`flex items-center gap-1 group transition-colors ${hoverColor}`}
+    className={`flex items-center justify-between gap-1 group transition-colors w-full ${hoverColor}`}
   >
     <div className={`p-2 ${hoverBg} rounded-full transition-colors`}>
       <Icon size={18} />
