@@ -1,164 +1,128 @@
-import { useUser, UserButton, SignOutButton, UserProfile, useClerk } from '@clerk/clerk-react';
+import React, { useState } from "react";
+import { useUser, useClerk } from "@clerk/clerk-react";
 import {
-  DatabaseSearch,
   Ellipsis,
   FlameIcon,
-  GaugeCircle,
   HomeIcon,
   List,
-  LogIn,
-  LogOut,
   LogOutIcon,
   Snowflake,
-  TrendingUp,
   Video,
-  CircleUser,
+  User,
+  Plus,
 } from "lucide-react";
-import { useUserList } from "../data/QueryUser/queryuser.jsx";
+
 const Sidenav = () => {
   const { user } = useUser();
-  const { openUserProfile } = useClerk();
-  const userrole = user?.publicMetadata?.Role || "User";
-  const { signOut } = useClerk();
-  const query = useUserList();
-  const { data, isLoading, error } = query;
-  const handlemenudrpodwon = () => {
-    const dropdown = document.querySelector(".group-hover\\:block");
-    if (dropdown) {
-      dropdown.classList.toggle("hidden");
-    }
-  };
+  const { openUserProfile, signOut } = useClerk();
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
-  const handlechangeaccount = () => {
-    signOut();
-  };
+  const navItems = [
+    { icon: <HomeIcon size={28} />, label: "Home" },
+    { icon: <FlameIcon size={28} />, label: "Trending" },
+    { icon: <List size={28} />, label: "Lists" },
+    { icon: <Video size={28} />, label: "Reels" },
+    {
+      icon: <User size={28} />,
+      label: "Profile",
+      onClick: () => openUserProfile(),
+    },
+  ];
 
   return (
-    <div className="hidden sm:hidden h-screen xl:block xl:w-[25%] 2xl:w-[17%] bg-[#FFF0F0] items-center px-4 py-6 flex-col justify-start relative overflow-hidden">
-      <div className="flex items-center gap-x-2">
-        <Snowflake color="blue" size={50} />
-        <h1 className="lg:text-4xl font-bold md:text-3xl">Nonnesx</h1>
-      </div>
-      <legend className="w-full border-b-4 border-t-2 mt-2 bg-white border-gray-300/40 shadow-xl shadow-gray-500/10 rounded-lg pb-0">
-        <ul className="flex flex-col gap-y-2  w-full">
-          <li className="text-lg font-medium cursor-pointer w-full border-2 pl-4 py-2 border-none flex items-center duration-100 hover:bg-blue-500 hover:text-white rounded-md ">
-            <HomeIcon className="inline-block mr-2" />
-            <p className="pl-1">Home Pages</p>
-          </li>
-          <li className="text-lg font-medium cursor-pointer w-full border-2 pl-4 py-2 border-none flex items-center duration-100 hover:bg-blue-500 hover:text-white rounded-md ">
-            <FlameIcon className="inline-block mr-2" />
-            <p className="pl-1">Trending Checks</p>
-          </li>
-          <li className="text-lg font-medium cursor-pointer w-full border-2 pl-4 py-2 border-none flex items-center duration-100 hover:bg-blue-500 hover:text-white rounded-md ">
-            <List className="inline-block mr-2" />
-            <p className="pl-1">List Content</p>
-          </li>
-          <li className="text-lg font-medium cursor-pointer w-full border-2 pl-4 py-2 border-none flex items-center duration-100 hover:bg-blue-500 hover:text-white rounded-md ">
-            <Video className="inline-block mr-2" />
-            <p className="pl-1">Reels Content Video</p>
-          </li>
-        </ul>
-      </legend>
-      <legend className="w-full border-b-4 border-t-2 mt-2 bg-white border-gray-300/40 shadow-xl shadow-gray-500/10 pb-0 rounded-lg">
-        <ul className="flex flex-col gap-y-2 w-full">
-          {data && data.length > 0 ? (
-            data.map((item) => (
-              <li
-                key={item.$id}
-                className="bg-amber-200/30 hover:bg-blue-500/20  text-lg font-medium cursor-pointer w-full border-2 pl-4 py-2 border-none flex items-center duration-100  rounded-md overflow-hidden "
-              >
-                <img
-                  src={item.user_image_url}
-                  alt={`${item.firstName} ${item.lastName}`}
-                  className="size-8 rounded-full mr-2 object-cover"
-                />
-                <div className="flex flex-col">
-                  <p className="pl-1">
-                    {item.firstName} {item.lastName}
-                  </p>
-                  <p className="text-sm text-gray-500 pl-1">{item.email}</p>
-                </div>
-              </li>
-            ))
-          ) : (
-            <p> Tidak ada data </p>
-          )}
-        </ul>
-      </legend>
-      <legend
-        role="button"
-        className="absolute left-0 bottom-0 mb-2 w-full border-b-4 bg-white border-gray-300/30 shadow-xl pb-0 mt-6 duration-100 rounded-lg hover:bg-gray-500/20"
-        onClick={() => openUserProfile()}
+    <>
+      {/* --- DESKTOP & TABLET SIDEBAR (Kiri) --- */}
+      <div
+        className="hidden sm:flex flex-col h-screen sticky top-0 bg-black border-r border-gray-800 text-white 
+                      w-[80px] xl:w-[275px] px-2 xl:px-4 py-3 justify-between items-center xl:items-start transition-all"
       >
-        <div className="px-4 flex items-center gap-x-1 w-full py-2">
-          <div className="">
-            <img
-              src={user?.imageUrl}
-              alt="Profile"
-              className="size-8 rounded-full mr-2 object-cover"
-            />
+        <div className="flex flex-col w-full items-center xl:items-start">
+          {/* Logo */}
+          <div className="p-3 w-fit hover:bg-gray-900 rounded-full cursor-pointer transition">
+            <Snowflake className="text-blue-400" size={32} />
           </div>
-          <div className="">
-            <h5 className="font-bold capitalize">{user?.fullName}</h5>
-            <p className="text-gray-500 text-[10px]">
-              {user?.emailAddresses[0]?.emailAddress}
-            </p>
-          </div>
-          <div className="absolute right-0 top-0 m-2 group">
-            <button
-              onClick={(e) => {
-                e.stopPropagation();
-                handlemenudrpodwon();
-              }}
-              className="hover:bg-gray-800/20 px-3 cursor-pointer"
-            >
-              <Ellipsis />
-            </button>
-            <div className="absolute -left-20 top-5 w-40 rounded-sm hidden group-hover:block  backdrop-blur-1xl shadow-lg ">
-              <SignOutButton>
-                <li className="px-4 py-2 bg-amber-50 hover:bg-green-500 duration-150 hover:text-white font-bold cursor-pointer flex items-center gap-x-2 text-sm rounded-sm">
-                  <LogOutIcon className="inline-block" size={19} />
-                  <p className="inline-block text-[12px] font-bold">Sign Out</p>
-                </li>
-              </SignOutButton>
+
+          {/* Navigation Items */}
+          <nav className="mt-4 space-y-1 w-full">
+            {navItems.map((item, idx) => (
               <div
-                role="button"
-                onClick={handlechangeaccount}
-                className="px-4 py-2 bg-amber-50 hover:bg-blue-500 duration-150 hover:text-white font-bold cursor-pointer flex items-center gap-x-2 text-sm rounded-sm"
+                key={idx}
+                onClick={item.onClick}
+                className="flex items-center gap-5 p-3 w-fit xl:pr-8 hover:bg-gray-900 rounded-full cursor-pointer transition group"
               >
-                <GaugeCircle className="inline-block" size={19} />
-                <p className="inline-block text-[12px] font-bold">
-                  Change Account
-                </p>
+                <span className="text-white group-hover:scale-105 transition-transform">
+                  {item.icon}
+                </span>
+                <span className="text-xl font-normal hidden xl:block">
+                  {item.label}
+                </span>
+              </div>
+            ))}
+          </nav>
+
+          {/* Post Button (X Style) */}
+          <button
+            className="mt-4 bg-blue-500 hover:bg-blue-600 text-white font-bold rounded-full 
+                             w-12 h-12 xl:w-full xl:h-12 flex items-center justify-center transition shadow-lg"
+          >
+            <Plus className="xl:hidden" size={24} />
+            <span className="hidden xl:block">Post</span>
+          </button>
+        </div>
+
+        {/* Profile Section */}
+        <div className="relative w-full">
+          {isDropdownOpen && (
+            <div className="absolute bottom-full left-0 w-64 mb-4 bg-black border border-gray-800 shadow-[0_0_10px_rgba(255,255,255,0.1)] rounded-2xl overflow-hidden z-50">
+              <button
+                onClick={() => signOut()}
+                className="w-full flex items-center gap-3 p-4 hover:bg-gray-900 transition font-bold text-sm text-red-500"
+              >
+                <LogOutIcon size={18} /> Sign out @
+                {user?.username || user?.firstName}
+              </button>
+            </div>
+          )}
+
+          <div
+            onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+            className="flex items-center justify-between p-3 hover:bg-gray-900 rounded-full cursor-pointer transition w-full"
+          >
+            <div className="flex items-center gap-3">
+              <img
+                src={user?.imageUrl}
+                alt="pfp"
+                className="size-10 rounded-full"
+              />
+              <div className="hidden xl:flex flex-col leading-tight">
+                <span className="font-bold text-[15px]">{user?.fullName}</span>
+                <span className="text-gray-500 text-[15px]">
+                  @{user?.username || "user"}
+                </span>
               </div>
             </div>
+            <Ellipsis size={20} className="hidden xl:block text-gray-500" />
           </div>
         </div>
-        <div
-          className="flex items-center gap-x-2 px-4 py-2 w-full
-        flex-wrap gap-y-2"
-        >
-          {userrole && userrole.length > 0 ? (
-            userrole.map((item) => (
-              <div
-                key={item.role_key}
-                style={{
-                  backgroundColor: item.bg_color,
-                  fontWeight: "bold",
-                }}
-                className="px-2 capitalize rounded-2xl py-1.5 text-shadow-2xs
-                 text-center  "
-              >
-                <p className="text-[10px] text-white">{item.role_user}</p>
-              </div>
-            ))
-          ) : (
-            <p className="text-sm text-gray-500">No roles found</p>
-          )}
-        </div>
-      </legend>
-    </div>
+      </div>
+
+      {/* --- MOBILE BOTTOM NAVIGATION (Muncul di layar HP < 640px) --- */}
+      <div className="sm:hidden fixed bottom-0 left-0 right-0 bg-black border-t border-gray-800 h-16 flex items-center justify-around text-white z-50 px-2">
+        {navItems.slice(0, 4).map((item, idx) => (
+          <div key={idx} className="p-2 active:bg-gray-900 rounded-full">
+            {item.icon}
+          </div>
+        ))}
+        {/* Mobile Profile Trigger */}
+        <img
+          src={user?.imageUrl}
+          onClick={() => openUserProfile()}
+          alt="pfp"
+          className="size-7 rounded-full border border-gray-700"
+        />
+      </div>
+    </>
   );
 };
 
-export default Sidenav
+export default Sidenav;
