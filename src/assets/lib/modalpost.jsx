@@ -1,17 +1,47 @@
 import ReactDOM from "react-dom";
-import { X, Image, List, Smile, Calendar, MapPin, Globe2, ArrowRight } from "lucide-react";
+import { X, Image, List, Smile, Calendar, MapPin, Globe2, ArrowRight, Loader } from "lucide-react";
 import { useRef, useState, useEffect } from "react";
 import { useUser } from "@clerk/clerk-react";
-
+import { createNewPost } from "../../data/db/Querydb";
+ 
 const Modal = ({ isOpen, onClose, onPostSubmit }) => {
   const { user } = useUser();
-  const [content, setContent] = useState("");
+    const [content, setContent] = useState("");
   const textareaRef = useRef(null);
   const [selectedFile, setSelectedFile] = useState(null);
   const [previewUrl, setPreviewUrl] = useState(null);
   const fileInputRef = useRef(null);
+console.log(user);
+    const [isLoading, setIsLoading] = useState(false);
 
+    const handlePostAction = async () => {
+            if (content.trim() && content.length <= 280) {
+              onPostSubmit?.(content);
+              onClose();
+            }
+      // Validasi dasar
+      if (!content.trim() && !selectedFile) return;
 
+      setIsLoading(true);
+      try {
+        // Panggil fungsi service
+        await createNewPost(content, selectedFile, user);
+
+        // Jika berhasil:
+        setContent("");
+        setSelectedFile(null);
+        setPreviewUrl(null);
+        onClose();
+
+        // Opsional: Refresh halaman atau beri notifikasi
+        console.log("Post created successfully!");
+      } catch (error) {
+        alert(error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    
     
   // Reset content & height saat modal dibuka/ditutup
   useEffect(() => {
@@ -46,12 +76,6 @@ const Modal = ({ isOpen, onClose, onPostSubmit }) => {
     setContent(target.value);
   };
 
-  const handlePost = () => {
-    if (content.trim() && content.length <= 280) {
-      onPostSubmit?.(content);
-      onClose();
-    }
-  };
 
   return ReactDOM.createPortal(
     <div className="fixed inset-0 z-50 flex items-start justify-center sm:items-center p-0 sm:p-4">
@@ -161,16 +185,23 @@ const Modal = ({ isOpen, onClose, onPostSubmit }) => {
 
                 <div className="flex items-center gap-4 my-3">
                   <button
-                    onClick={handlePost}
+                    onClick={handlePostAction}
                     disabled={!content.trim() || content.length > 280}
-                    className={`px-5 py-2 rounded-full font-bold text-sm transition-all
+                    className={`flex item-center px-5 py-2 rounded-full font-bold text-sm transition-all
                     ${
                       content.trim() && content.length <= 280
                         ? "bg-blue-500 text-white hover:bg-blue-600 cursor-pointer"
                         : "bg-blue-500/50 text-white/50 cursor-not-allowed"
                     }`}
                   >
-                    Post Tweets
+                    {isLoading ? (
+                      <>
+                        <Loader2 className="animate-spin" size={16} />
+                        <span>Posting...</span>
+                      </>
+                    ) : (
+                      "Post Tweets"
+                    )}
                   </button>
                 </div>
               </div>
