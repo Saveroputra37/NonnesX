@@ -36,7 +36,7 @@ const Sidenav = () => {
       {/* --- DESKTOP & TABLET SIDEBAR (Kiri) --- */}
       <div
         className="hidden sm:flex flex-col h-screen sticky top-0 bg-black border-r border-gray-800 text-white 
-                      w-[80px] xl:w-[400px] px-2 xl:px-4 py-3 justify-between items-center xl:items-start transition-all"
+                      w-20 xl:w-100 px-2 xl:px-4 py-3 justify-between items-center xl:items-start transition-all"
       >
         <div className="flex flex-col w-full items-center xl:items-start">
           {/* Logo */}

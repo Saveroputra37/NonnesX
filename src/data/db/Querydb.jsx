@@ -1,4 +1,3 @@
-import { useQuery } from "@tanstack/react-query";
 import { databases, DATABASE_ID, storage } from "../appwriteconfig";
 import { ID, Query } from "appwrite";
 import { useEffect, useState } from "react";
@@ -12,12 +11,12 @@ export const useGetDocuments = () => {
 
   const fetchInitialPosts = async () => {
     try {
+      setLoading(true);
       const response = await databases.listDocuments(
         DATABASE_ID,
         COLLECTION_ID,
         [Query.orderDesc("$createdAt"), Query.limit(20)],
       );
-      console.log("Data Appwrite Berhasil:", response.documents);
       setPosts(response.documents);
     } catch (error) {
       console.error("Gagal mengambil posts:", error.message);
@@ -29,52 +28,57 @@ export const useGetDocuments = () => {
   useEffect(() => {
     fetchInitialPosts();
 
-    const unsubscribe = subscribeToPosts((newPost) => {
-      setPosts((prevPosts) => {
-        // Cek agar tidak ada data ganda jika koneksi lambat
-        if (prevPosts.find((p) => p.$id === newPost.$id)) return prevPosts;
-        return [newPost, ...prevPosts];
+    // Start Subscription
+    const unsubscribe = subscribeToPosts((payload) => {
+      setPosts((prev) => {
+        // Prevent duplicates if the creator also receives the event
+        if (prev.some((p) => p.$id === payload.$id)) return prev;
+        return [payload, ...prev];
       });
     });
 
+    // Cleanup: This is vital in React Strict Mode/Development
     return () => {
-      if (unsubscribe) unsubscribe();
+      if (typeof unsubscribe === "function") {
+        unsubscribe();
+      }
     };
   }, []);
 
-  // Kembalikan objek data, bukan JSX
-  return { posts, loading };
+  return { posts, loading, refetch: fetchInitialPosts };
 };
 
 export const createNewPost = async (content, file, user) => {
   try {
-    let imageId = null;
-    let imageUrl = null; // Tambahkan variable untuk menampung URL
+    let imageUrl = null;
 
-    // 1. Logika Upload Gambar (Jika ada)
+    // 1. Logika Upload Gambar
     if (file) {
       const uploadResponse = await storage.createFile(
         BUCKET_ID,
         ID.unique(),
         file,
       );
-      imageId = uploadResponse.$id;
 
-      // GENERATE URL: Ambil URL publik dari file yang baru diupload
-      const result = storage.getFileView(BUCKET_ID, imageId);
-      imageUrl = result.href;
+      // Kadang getFileView mengembalikan objek URL, gunakan .href atau .toString()
+      const result = storage.getFileView(BUCKET_ID, uploadResponse.$id);
+
+      // SOLUSI: Pastikan diconvert ke string
+      imageUrl = result.href ? result.href : result.toString();
+
+      console.log("Generated Image URL:", imageUrl); // Cek di console log
     }
 
     // 2. Persiapkan Data Dokumen
     const postData = {
-      id_user: user?.id,
-      email_user: user?.primaryEmailAddress?.emailAddress,
+      id_user: user?.id || "unknown",
+      email_user: user?.primaryEmailAddress?.emailAddress || "no-email",
       name_user: user?.username || user?.firstName || "Anonymous",
-      avatar_user: user?.imageUrl,
+      avatar_user: user?.imageUrl || "",
       content_post: content,
       isverified_user: false,
-      image_post: imageId, // Simpan ID (untuk keperluan manajemen file)
-      url_image_post: imageUrl, // Simpan URL Langsung (agar feed lebih cepat render)
+      image_post: imageUrl || "minus",
+      url_image_post: imageUrl || "minus", // Pastikan tidak null agar tidak error di Appwrite
     };
 
     // 3. Simpan ke Database
@@ -85,8 +89,7 @@ export const createNewPost = async (content, file, user) => {
       postData,
     );
 
-    // Kita return response asli + imageUrl agar UI bisa langsung update jika perlu
-    return { ...response, fullImageUrl: imageUrl };
+    return response;
   } catch (error) {
     console.error("Error in createNewPost service:", error);
     throw error;

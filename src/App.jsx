@@ -1,14 +1,19 @@
-import React from 'react'
-import { ClerkProvider, useUser } from '@clerk/clerk-react'
-import Navbar from './assets/Navbar'
-import Home from './page/Home/home'
-import Layout from './page/LayoutLogin/layout'
-import { Route, Router } from "lucide-react";
+import React from "react";
+import {
+  ClerkProvider,
+  useUser,
+  SignedIn,
+  SignedOut,
+} from "@clerk/clerk-react";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import Navbar from "./assets/Navbar";
+import Home from "./page/Home/home";
+import Layout from "./page/LayoutLogin/layout";
 
+// Komponen untuk memproteksi rute atau mengecek status login
 const AppContent = () => {
-  const { user, isLoaded } = useUser();
+  const { isLoaded } = useUser();
 
-  // Loading state saat Clerk mengecek authentication
   if (!isLoaded) {
     return (
       <div className="flex h-screen w-full items-center justify-center">
@@ -20,27 +25,57 @@ const AppContent = () => {
     );
   }
 
-  // Jika user sudah login, tampilkan Home
-  if (user) {
-    return (
-      <div>
-        <Home />
-      </div>
-    );
-  }
+  return (
+    <Routes>
+      {/* Jika sudah login (SignedIn), arahkan ke Home */}
+      <Route
+        path="/"
+        element={
+          <>
+            <SignedIn>
+              <Home />
+            </SignedIn>
+            <SignedOut>
+              <Navigate to="/login" replace />
+            </SignedOut>
+          </>
+        }
+      />
 
-  // Jika user belum login, tampilkan Login
-  return <Layout />;
+      {/* Jika belum login (SignedOut), tampilkan halaman Login/Layout */}
+      <Route
+        path="/login"
+        element={
+          <>
+            <SignedOut>
+              <Layout />
+            </SignedOut>
+            <SignedIn>
+              <Navigate to="/" replace />
+            </SignedIn>
+          </>
+        }
+      />
+
+      {/* Tambahkan route lain di sini jika perlu */}
+    </Routes>
+  );
 };
 
 const App = () => {
-  const publishableKey = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY
-  
-  return (
-    <ClerkProvider publishableKey={publishableKey}>
-      <AppContent />
-    </ClerkProvider>
-  )
-}
+  const publishableKey = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY;
 
-export default App
+  if (!publishableKey) {
+    throw new Error("Missing Publishable Key");
+  }
+
+  return (
+    <BrowserRouter>
+      <ClerkProvider publishableKey={publishableKey}>
+        <AppContent />
+      </ClerkProvider>
+    </BrowserRouter>
+  );
+};
+
+export default App;

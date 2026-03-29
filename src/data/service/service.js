@@ -1,4 +1,9 @@
-import client, { DATABASE_ID, COLLECTION_ID_POST } from "../appwriteconfig";
+import client, {
+  DATABASE_ID,
+  COLLECTION_ID_POST,
+  databases,
+} from "../appwriteconfig";
+const BUCKET_ID = "69b65237000c0c300c8b";
 
 export const subscribeToPosts = (callback) => {
   const channel = `databases.${DATABASE_ID}.collections.${COLLECTION_ID_POST}.documents`;

@@ -11,7 +11,7 @@ const Modal = ({ isOpen, onClose, onPostSubmit }) => {
   const [selectedFile, setSelectedFile] = useState(null);
   const [previewUrl, setPreviewUrl] = useState(null);
   const fileInputRef = useRef(null);
-console.log(user);
+
     const [isLoading, setIsLoading] = useState(false);
 
     const handlePostAction = async () => {
@@ -86,7 +86,7 @@ console.log(user);
       />
 
       {/* Konten Modal */}
-      <div className="relative w-full max-w-[600px] bg-black sm:border border-zinc-800 sm:rounded-2xl shadow-2xl overflow-hidden animate-in fade-in zoom-in duration-200 min-h-screen sm:min-h-fit">
+      <div className="relative w-full max-w-150 bg-black sm:border border-zinc-800 sm:rounded-2xl shadow-2xl overflow-hidden animate-in fade-in zoom-in duration-200 min-h-screen sm:min-h-fit">
         {/* Header Modal */}
         <div className="flex items-center justify-between px-4 py-3 sticky top-0 bg-black/80 backdrop-blur-md z-10 border-b-2 border-b-gray-100/10 mb-3">
           <button
@@ -127,7 +127,7 @@ console.log(user);
                 placeholder="What is happening?!"
                 value={content}
                 onChange={handleInput}
-                className="w-full bg-transparent text-zinc-100 text-xl placeholder:text-zinc-500 outline-none resize-none py-2 leading-relaxed min-h-[120px]"
+                className="w-full bg-transparent text-zinc-100 text-xl placeholder:text-zinc-500 outline-none resize-none py-2 leading-relaxed min-h-30"
               />
               <div>
                 <input
@@ -170,7 +170,7 @@ console.log(user);
                 )}
               </div>
 
-              <div className="h-[1px] bg-zinc-800 mb-3 w-full" />
+              <div className="h-px bg-zinc-800 mb-3 w-full" />
 
               {/* Bottom Toolbar */}
               <div className="flex items-center justify-between">
