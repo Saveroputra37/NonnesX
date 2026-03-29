@@ -17,18 +17,15 @@ const Feed = () => {
 
   return (
     <div className="h-fit flex justify-center">
-      <div className="w-full xl:min-w-[600px] min-w-[440px]">
+      <div className="w-full xl:min-w-150 min-w-110  capitalize">
         <div className="flex flex-col">
           {posts.map((post) => (
-            <TweetCard
-              key={post.$id}
-              tweet={post}
-            />
+            <TweetCard key={post.$id} tweet={post} />
           ))}
         </div>
       </div>
     </div>
   );
-};
+};;
 
 export default Feed;

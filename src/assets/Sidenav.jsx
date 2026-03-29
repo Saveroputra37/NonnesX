@@ -13,6 +13,7 @@ import {
   SendHorizonal,
 } from "lucide-react";
 import Modal from "./lib/modalpost";
+import Modalvideo from "./lib/VideoPostModal";
 const Sidenav = () => {
   const { user } = useUser();
   const { openUserProfile, signOut } = useClerk();
@@ -35,10 +36,10 @@ const Sidenav = () => {
     <>
       {/* --- DESKTOP & TABLET SIDEBAR (Kiri) --- */}
       <div
-        className="hidden sm:flex flex-col h-screen sticky top-0 bg-black border-r border-gray-800 text-white 
+        className=" hidden sm:flex flex-col h-screen sticky top-0 bg-black border-r border-gray-800 text-white 
                       w-20 xl:w-100 px-2 xl:px-4 py-3 justify-between items-center xl:items-start transition-all"
       >
-        <div className="flex flex-col w-full items-center xl:items-start">
+        <div className="flex flex-col w-full items-center xl:items-start ">
           {/* Logo */}
           <div className="p-3 w-full hover:bg-gray-900 cursor-pointer transition flex items-center gap-x-3">
             <Snowflake className="text-blue-400" size={32} />
@@ -76,6 +77,21 @@ const Sidenav = () => {
             </span>
           </button>
           <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
+          <button
+            onClick={() => setIsModalOpen(true)}
+            className="mt-10 bg-blue-500 hover:bg-blue-600 text-white font-bold rounded-full 
+                             w-12 h-12 xl:w-full xl:h-12 flex items-center justify-center transition shadow-lg"
+          >
+            <SendHorizonal className="xl:hidden block" size={24} />
+            <SendHorizonal className="xl:block sm:hidden mr-2" size={24} />
+            <span className="hidden xl:block">
+              <span>Post Your Videos</span>
+            </span>
+          </button>
+          <Modalvideo
+            isOpen={isModalOpen}
+            onClose={() => setIsModalOpen(false)}
+          />
         </div>
 
         {/* Profile Section */}
@@ -98,7 +114,8 @@ const Sidenav = () => {
                 onClick={() => signOut()}
                 className="w-full flex items-center gap-3 p-4 hover:bg-gray-900 transition font-bold text-sm text-red-500"
               >
-                <LogOutIcon size={18} /> Sign Out Account
+                <LogOutIcon size={18} />
+                <p>Sign Account @{user?.username || "user"}</p>
               </button>
             </div>
           )}

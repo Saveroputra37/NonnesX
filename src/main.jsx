@@ -7,7 +7,6 @@ import { ClerkProvider } from "@clerk/react";
 const keyprovider = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY;
 const queryClient = new QueryClient();
 
-console.log(queryClient);
 
 if (!keyprovider) {
   console.error(

@@ -10,12 +10,14 @@ import {
   BadgeCheck,
   Trash2,
 } from "lucide-react";
+import { useDeleteDocument } from "../../data/db/Querydb";
 
-const TweetCard = ({ tweet, onDelete }) => {
+const TweetCard = ({ tweet }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const { user, isLoaded } = useUser();
+  const { mutate, isPending } = useDeleteDocument();
 
-  if (!tweet) return null;
+  if (!tweet || !tweet.$id || !tweet.content_post) return null;
 
   const isOwner = isLoaded && user && user.id === tweet.id_user;
   const userHandle = tweet.email_user?.split("@")[0].toLowerCase() || "user";
@@ -29,12 +31,23 @@ const TweetCard = ({ tweet, onDelete }) => {
         day: "numeric",
       }).format(date);
     } catch (e) {
+      console.log(e);
       return "";
     }
   };
 
+  const handleDelete = () => {
+    if (confirm("Hapus postingan ini?")) {
+      // Sesuaikan field image_post sesuai nama field ID file Anda di database
+      mutate({
+        documentId: tweet.$id,
+        fileId: tweet.image_post, // Pastikan ini menyimpan ID File, bukan URL
+      });
+    }
+  };
+
   return (
-    <div className="w-full xl:min-w-[600px] min-w-[480px] xl:max-w-[600px] max-w-[480px] bg-black border border-[#2f3336] m-2 rounded-xl p-3 px-4 shadow-[0_0_10px_rgba(255,255,255,0.03)] hover:shadow-[0_0_20px_rgba(255,255,255,0.07)] hover:bg-white/5 transition-all duration-300 cursor-pointer font-sans">
+    <div className="w-full xl:min-w-[650px] min-w-[480px] xl:max-w-[650px] max-w-[480px] bg-black border border-[#2f3336] m-2 rounded-xl p-3 px-4 shadow-[0_0_10px_rgba(255,255,255,0.03)] hover:shadow-[0_0_20px_rgba(255,255,255,0.07)] hover:bg-white/5 transition-all duration-300 cursor-pointer font-sans">
       <div className="flex gap-3">
         <div className="flex-1 min-w-0">
           <div className="flex justify-between items-start">
@@ -94,9 +107,10 @@ const TweetCard = ({ tweet, onDelete }) => {
                         <button
                           onClick={(e) => {
                             e.stopPropagation();
-                            onDelete(tweet.$id, tweet.image_post);
+                            handleDelete();
                             setIsMenuOpen(false);
                           }}
+                          disabled={isPending}
                           className="flex items-center gap-3 px-3 py-2 text-[#f4212e] rounded-xl hover:text-white hover:bg-red-700 transition-colors font-bold text-[12px] w-full text-left "
                         >
                           <Trash2 size={18} />
@@ -120,11 +134,11 @@ const TweetCard = ({ tweet, onDelete }) => {
 
           {(tweet.url_image_post ||
             (tweet.image_post && tweet.image_post !== "minus")) && (
-            <div className="mb-3 rounded-xl border border-[#2f3336] overflow-hidden">
+            <div className="mb-3 bg-[#2f333652] overflow-hidden">
               <img
                 src={tweet.url_image_post || tweet.image_post}
                 alt="post content"
-                className="w-full h-auto max-h-[480px] object-cover"
+                className="w-full h-auto max-h-[270px] object-contain"
                 loading="lazy"
               />
             </div>
