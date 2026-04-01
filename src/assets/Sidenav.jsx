@@ -9,16 +9,19 @@ import {
   Snowflake,
   Video,
   User,
-  Plus,
   SendHorizonal,
 } from "lucide-react";
-import Modal from "./lib/modalpost";
-import Modalvideo from "./lib/VideoPostModal";
+// Import komponen gabungan yang baru
+import UnifiedPostModal from "../assets/lib/Universalpost.jsx";
+
 const Sidenav = () => {
   const { user } = useUser();
   const { openUserProfile, signOut } = useClerk();
+
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  // Pisahkan state modal agar tidak bentrok
+  const [modalMode, setModalMode] = useState(null); // 'tweet' | 'video' | null
 
   const navItems = [
     { icon: <HomeIcon size={28} />, label: "Home" },
@@ -34,12 +37,9 @@ const Sidenav = () => {
 
   return (
     <>
-      {/* --- DESKTOP & TABLET SIDEBAR (Kiri) --- */}
-      <div
-        className=" hidden sm:flex flex-col h-screen sticky top-0 bg-black border-r border-gray-800 text-white 
-                      w-20 xl:w-100 px-2 xl:px-4 py-3 justify-between items-center xl:items-start transition-all"
-      >
-        <div className="flex flex-col w-full items-center xl:items-start ">
+      {/* --- DESKTOP & TABLET SIDEBAR --- */}
+      <div className="hidden sm:flex flex-col h-screen sticky top-0 bg-black border-r border-gray-800 text-white w-20 xl:w-100 px-2 xl:px-4 py-3 justify-between items-center xl:items-start transition-all">
+        <div className="flex flex-col w-full items-center xl:items-start">
           {/* Logo */}
           <div className="p-3 w-full hover:bg-gray-900 cursor-pointer transition flex items-center gap-x-3">
             <Snowflake className="text-blue-400" size={32} />
@@ -64,65 +64,54 @@ const Sidenav = () => {
             ))}
           </nav>
 
-          {/* Post Button (X Style) */}
-          <button
-            onClick={() => setIsModalOpen(true)}
-            className="mt-10 bg-blue-500 hover:bg-blue-600 text-white font-bold rounded-full 
-                             w-12 h-12 xl:w-full xl:h-12 flex items-center justify-center transition shadow-lg"
-          >
-            <SendHorizonal className="xl:hidden block" size={24} />
-            <SendHorizonal className="xl:block sm:hidden mr-2" size={24} />
-            <span className="hidden xl:block">
-              <span>Post Your Tweets</span>
-            </span>
-          </button>
-          <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
-          <button
-            onClick={() => setIsModalOpen(true)}
-            className="mt-10 bg-blue-500 hover:bg-blue-600 text-white font-bold rounded-full 
-                             w-12 h-12 xl:w-full xl:h-12 flex items-center justify-center transition shadow-lg"
-          >
-            <SendHorizonal className="xl:hidden block" size={24} />
-            <SendHorizonal className="xl:block sm:hidden mr-2" size={24} />
-            <span className="hidden xl:block">
-              <span>Post Your Videos</span>
-            </span>
-          </button>
-          <Modalvideo
-            isOpen={isModalOpen}
-            onClose={() => setIsModalOpen(false)}
-          />
+          {/* --- TOMBOL AKSI --- */}
+          <div className="flex flex-col w-full gap-3 mt-10">
+            {/* Button Post Tweet */}
+            <button
+              onClick={() => setModalMode("tweet")}
+              className="bg-blue-500 hover:bg-blue-600 text-white font-bold rounded-full w-12 h-12 xl:w-full xl:h-12 flex items-center justify-center transition shadow-lg"
+            >
+              <SendHorizonal size={24} className="xl:mr-2" />
+              <span className="hidden xl:block text-sm">Post Your Tweets</span>
+            </button>
+
+            {/* Button Post Video/Reel */}
+            <button
+              onClick={() => setModalMode("video")}
+              className="bg-zinc-800 hover:bg-zinc-700 text-white font-bold rounded-full w-12 h-12 xl:w-full xl:h-12 flex items-center justify-center transition shadow-lg border border-zinc-700"
+            >
+              <Video size={24} className="xl:mr-2" />
+              <span className="hidden xl:block text-sm">Post Your Videos</span>
+            </button>
+          </div>
         </div>
 
         {/* Profile Section */}
         <div className="relative w-full">
           {isDropdownOpen && (
-            <div className="absolute bottom-full left-0 w-64 mb-4 bg-black border border-gray-800 shadow-[0_0_15px_rgba(255,255,255,0.1)]  overflow-hidden z-50 py-2">
-              {/* TOMBOL EDIT PROFILE DI DROPDOWN */}
+            <div className="absolute bottom-full left-0 w-64 mb-4 bg-black border border-gray-800 shadow-[0_0_15px_rgba(255,255,255,0.1)] z-50 py-2">
               <button
                 onClick={() => {
                   openUserProfile();
-                  setIsDropdownOpen(false); // Tutup dropdown setelah buka profil
+                  setIsDropdownOpen(false);
                 }}
                 className="w-full flex items-center gap-3 p-4 hover:bg-gray-900 transition font-bold text-sm text-white border-b border-gray-800"
               >
                 <User size={18} /> Settings & Privacy
               </button>
-
-              {/* TOMBOL SIGN OUT */}
               <button
                 onClick={() => signOut()}
                 className="w-full flex items-center gap-3 p-4 hover:bg-gray-900 transition font-bold text-sm text-red-500"
               >
                 <LogOutIcon size={18} />
-                <p>Sign Account @{user?.username || "user"}</p>
+                <p>Sign Out @{user?.username || "user"}</p>
               </button>
             </div>
           )}
 
           <div
             onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-            className="flex items-center justify-between p-3 hover:bg-gray-900  cursor-pointer transition w-full"
+            className="flex items-center justify-between p-3 hover:bg-gray-900 cursor-pointer transition w-full rounded-full"
           >
             <div className="flex items-center gap-3">
               <img
@@ -142,14 +131,21 @@ const Sidenav = () => {
         </div>
       </div>
 
-      {/* --- MOBILE BOTTOM NAVIGATION (Muncul di layar HP < 640px) --- */}
+      {/* --- MODAL RENDER --- */}
+      {/* Cukup panggil satu komponen, kontrol lewat prop 'mode' */}
+      <UnifiedPostModal
+        isOpen={modalMode !== null}
+        onClose={() => setModalMode(null)}
+        mode={modalMode}
+      />
+
+      {/* --- MOBILE BOTTOM NAVIGATION --- */}
       <div className="sm:hidden fixed bottom-0 left-0 right-0 bg-black border-t border-gray-800 h-16 flex items-center justify-around text-white z-50 px-2">
         {navItems.slice(0, 4).map((item, idx) => (
           <div key={idx} className="p-2 active:bg-gray-900 rounded-full">
             {item.icon}
           </div>
         ))}
-        {/* Mobile Profile Trigger */}
         <img
           src={user?.imageUrl}
           onClick={() => openUserProfile()}

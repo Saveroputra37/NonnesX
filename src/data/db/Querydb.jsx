@@ -7,9 +7,24 @@ import {
 import { ID, Query } from "appwrite";
 import { useEffect, useState } from "react";
 import { subscribeToPosts } from "../service/service";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 const COLLECTION_ID = "posts";
 const BUCKET_ID = "69b65237000c0c300c8b";
+
+export const useGetDocumentById = (documentId) => {
+  return useQuery({
+    queryKey: ["document", documentId],
+    queryFn: async () => {
+      const response = await databases.getDocument(
+        DATABASE_ID,
+        COLLECTION_ID_POST,
+        documentId,
+      );
+      return response;
+    },
+    enabled: !!documentId, // Hanya jalan jika documentId ada
+  });
+};
 
 export const useGetDocuments = () => {
   const [posts, setPosts] = useState([]);
@@ -186,38 +201,62 @@ export const fetchVideos = async () => {
 };
 
 export const createNewVideoPost = async (data) => {
-  const { content, file, user } = data;
+  // Destructure data termasuk 'thumbnail' dari modal
+  const { content, file, thumbnail, user } = data;
 
   try {
-    let fileId = null;
+    let videoFileId = "minus";
+    let thumbFileId = "minus";
 
-    // 1. Upload Video ke Storage jika ada
+    // 1. Upload Video Utama
     if (file) {
-      const uploadedFile = await storage.createFile(
+      const uploadedVideo = await storage.createFile(
         BUCKET_ID,
         ID.unique(),
         file,
       );
-      fileId = uploadedFile.$id;
+      videoFileId = uploadedVideo.$id;
     }
 
-    // 2. Buat Dokumen di Collection 'reelspost'
+    // 2. Upload Thumbnail Custom (Jika user memilih gambar cover)
+    if (thumbnail) {
+      const uploadedThumb = await storage.createFile(
+        BUCKET_ID,
+        ID.unique(),
+        thumbnail,
+      );
+      thumbFileId = uploadedThumb.$id;
+    }
+
+    // 3. Simpan Metadata ke Collection 'reelspost'
     const response = await databases.createDocument(
       DATABASE_ID,
-      "reelspost", // Ganti dengan ID Collection Reels Anda
+      "reelspost",
       ID.unique(),
       {
-        title_rels: content,
-        url_rels: fileId, // Menyimpan ID File Video
-        thumbnail_rels: "minus", // Sementara, bisa diupdate dengan upload image
-        views_rels: "0",
-        creator_rels: user.username,
-        user_id: user.id, // ID dari Clerk
-        user_email: user.email, // Email dari Clerk
+        title_rels: content || "",
+        url_rels: videoFileId, // Menyimpan ID File Video
+        thumbnail_rels: thumbFileId, // Menyimpan ID File Thumbnail
+        views_rels: 0,
+        creator_rels: user.username || "Anonymous",
+        user_rels: user.id || "unknown",
+        user_email_rels: user.email || "no-email",
       },
     );
 
+    console.log("Reel successfully created:", response.$id);
     return response;
+  } catch (error) {
+    console.error("Error in createNewVideoPost:", error);
+    // Lempar error agar ditangkap oleh TanStack Mutation (isError)
+    throw new Error(error.message || "Failed to upload reel");
+  }
+};
+
+export const deleteVideoPost = async (videoId) => {
+  try {
+    await databases.deleteDocument(DATABASE_ID, "reelspost", videoId);
+    return true;
   } catch (error) {
     throw new Error(error.message);
   }
