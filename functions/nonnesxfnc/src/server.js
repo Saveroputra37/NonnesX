@@ -89,7 +89,20 @@ try {
           firstName: attributes.first_name,
           lastName: attributes.last_name,
           user_image_url: attributes.image_url,
-          // Menyimpan metadata jika ada
+          header_url:
+            attributes.public_metadata?.header_url ||
+            attributes.public_metadata?.headerUrl ||
+            "",
+          publicMetadata: attributes.public_metadata || {},
+          followers_count:
+            attributes.public_metadata?.followers_count ??
+            attributes.followers_count ??
+            0,
+          following_count:
+            attributes.public_metadata?.following_count ??
+            attributes.following_count ??
+            0,
+          socialLinks: attributes.public_metadata?.socialLinks || {},
         };
 
         // Cek apakah dokumen sudah ada

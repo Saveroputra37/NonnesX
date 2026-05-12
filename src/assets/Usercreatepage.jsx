@@ -1,7 +1,9 @@
 import { Eye, EyeOff, Key, Snowflake } from "lucide-react";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { useSignUp } from "@clerk/clerk-react";
 const Usercreatepage = () => {
+  const navigate = useNavigate();
   const { signUp: _signUp, setActive, isLoaded } = useSignUp();
   const [showpassword, setShowPassword] = useState(false);
   const [password, setPassword] = useState("");
@@ -33,6 +35,7 @@ const Usercreatepage = () => {
         // Mengatur sesi aktif
         await setActive({ session: result.createdSessionId });
         setError("");
+        navigate("/onboarding", { replace: true });
       } else if (result.status === "missing_requirements") {
         console.log("Perlu langkah verifikasi tambahan", result);
         console.log("Email untuk verifikasi:", email);
@@ -105,6 +108,7 @@ const Usercreatepage = () => {
         // Reset form
         setVerificationCode("");
         setSignUpId(null);
+        navigate("/onboarding", { replace: true });
       } else {
         console.log("Verification status:", result.status);
         setError("Verifikasi gagal, coba lagi atau minta kode baru");

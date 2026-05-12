@@ -8,10 +8,12 @@ import {
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import Home from "./page/Home/home";
 import Layout from "./page/LayoutLogin/layout";
+import Onboarding from "./page/Onboarding/Onboarding";
 import Detailpost from "./page/Detailpost/Detailpost";
 
 const AppContent = () => {
-  const { isLoaded } = useUser();
+  const { isLoaded, user } = useUser();
+  const isOnboarded = user?.publicMetadata?.onboardingComplete === true;
 
   if (!isLoaded) {
     return (
@@ -32,7 +34,7 @@ const AppContent = () => {
         element={
           <>
             <SignedIn>
-              <Home />
+              {isOnboarded ? <Home /> : <Navigate to="/onboarding" replace />}
             </SignedIn>
             <SignedOut>
               <Navigate to="/login" replace />
@@ -50,8 +52,26 @@ const AppContent = () => {
               <Layout />
             </SignedOut>
             <SignedIn>
-              <Navigate to="/" replace />
+              {isOnboarded ? (
+                <Navigate to="/" replace />
+              ) : (
+                <Navigate to="/onboarding" replace />
+              )}
             </SignedIn>
+          </>
+        }
+      />
+
+      <Route
+        path="/onboarding"
+        element={
+          <>
+            <SignedIn>
+              {isOnboarded ? <Navigate to="/" replace /> : <Onboarding />}
+            </SignedIn>
+            <SignedOut>
+              <Navigate to="/login" replace />
+            </SignedOut>
           </>
         }
       />
