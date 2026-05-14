@@ -24,7 +24,8 @@ const StepPublicMetadata = ({ form, onChange }) => {
       <div>
         <h2 className="text-2xl font-semibold text-white">Metadata Publik</h2>
         <p className="mt-2 text-sm text-slate-400">
-          Tambahkan bio singkat dan tautan publik yang orang lain bisa lihat.
+          Tambahkan bio singkat dan tautan publik yang orang lain
+          bi;'l,';g,b;'rsdlgfsa lihat.
         </p>
       </div>
 
@@ -40,7 +41,9 @@ const StepPublicMetadata = ({ form, onChange }) => {
       </label>
 
       <label className="block">
-        <span className="text-sm font-medium text-slate-300">Website / Kontak</span>
+        <span className="text-sm font-medium text-slate-300">
+          Website / Kontak
+        </span>
         <input
           value={form.publicMetadata.website}
           onChange={onChange("website")}
@@ -50,9 +53,12 @@ const StepPublicMetadata = ({ form, onChange }) => {
       </label>
 
       <div>
-        <span className="text-sm font-medium text-slate-300">Link Sosial Media</span>
+        <span className="text-sm font-medium text-slate-300">
+          Link Sosial Media
+        </span>
         <p className="mt-1 text-xs text-slate-400">
-          Tambahkan link sosial media kamu untuk memudahkan orang lain menghubungi atau mengikuti kamu.
+          Tambahkan link sosial media kamu untuk memudahkan orang lain
+          menghubungi atau mengikuti kamu.
         </p>
         <div className="mt-3 grid gap-3 sm:grid-cols-2">
           {socialMediaPlatforms.map((platform) => (
@@ -73,7 +79,9 @@ const StepPublicMetadata = ({ form, onChange }) => {
       </div>
 
       <div className="rounded-3xl border border-slate-800 bg-slate-950/90 p-4 text-slate-300">
-        <p className="text-sm font-semibold text-slate-100">Preview hal. publik</p>
+        <p className="text-sm font-semibold text-slate-100">
+          Preview hal. publik
+        </p>
         <div className="mt-3 space-y-2 text-sm leading-relaxed">
           <p>{form.publicMetadata.bio || "Bio belum diisi"}</p>
           <p className="text-blue-300 underline decoration-slate-500/40">
